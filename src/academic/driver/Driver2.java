@@ -7,7 +7,7 @@ import java.util.*;
  * @author 12S23023 Lenni Febriyani Hutape
  * @author 12S23045 Chintya Reginauli Rajagukguk
  */
- 
+
 public class Driver2 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -40,6 +40,7 @@ public class Driver2 {
                         errorList.add("invalid student|" + parts[2]);
                     }
                     
+                    // Jangan tambahkan enrollment jika ada kesalahan validasi
                     if (courseExists && studentExists) {
                         enrollments.add(new Enrollment(parts[1], parts[2], parts[3], parts[4]));
                     }

@@ -44,7 +44,13 @@ public class Driver1 {
         }
         
         for (String error : errorMessages) System.out.println(error);
-        for (Course course : courses) System.out.println(course);
+        
+        courses.sort(Comparator.comparing(Course::getCode));
+
+        for (Course course : courses) {
+            System.out.println(course);
+        }
+
         for (Student student : students) System.out.println(student);
         for (Enrollment enrollment : enrollments) System.out.println(enrollment);
         

@@ -40,7 +40,6 @@ public class Driver2 {
                         errorList.add("invalid student|" + parts[2]);
                     }
                     
-                    // Jangan tambahkan enrollment jika ada kesalahan validasi
                     if (courseExists && studentExists) {
                         enrollments.add(new Enrollment(parts[1], parts[2], parts[3], parts[4]));
                     }
@@ -57,9 +56,11 @@ public class Driver2 {
             System.out.println(error);
         }
 
-        // Urutkan courses dan students sebelum mencetak
+        // Urutkan courses terlebih dahulu
         courses.sort(Comparator.comparing(Course::getCode));
-        students.sort(Comparator.comparing(Student::getId));
+
+        // Urutkan students dalam urutan menurun berdasarkan ID
+        students.sort((s1, s2) -> s2.getId().compareTo(s1.getId())); // Decrement ID order
 
         // Cetak courses, students, dan enrollments setelah error
         for (Course course : courses) {

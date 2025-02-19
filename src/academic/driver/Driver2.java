@@ -2,7 +2,8 @@ package academic.driver;
 
 import academic.model.*;
 import java.util.*;
-
+import java.util.Comparator;
+import java.util.Collections;
 /**
  * @author 12S23023 Lenni Febriyani Hutape
  * @author 12S23045 Chintya Reginauli Rajagukguk
@@ -50,7 +51,7 @@ public class Driver2 {
                 }
             }
         }
-
+Collections.sort(courses, Comparator.comparing(Course::getCode));
         // Cetak error dalam urutan yang benar
         for (String error : errorList) {
             System.out.println(error);

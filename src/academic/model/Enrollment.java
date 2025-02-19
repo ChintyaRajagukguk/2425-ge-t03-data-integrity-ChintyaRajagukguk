@@ -6,7 +6,7 @@ package academic.model;
  */
 
  public class Enrollment {
-     private String courseCode;
+     private String courseCode;//
      private String studentId;
      private String year;
      private String semester;

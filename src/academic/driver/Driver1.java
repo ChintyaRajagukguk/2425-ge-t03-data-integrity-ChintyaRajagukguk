@@ -6,10 +6,11 @@ import academic.model.Enrollment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
- * @autor 12S23023 Lenni Febriyani
- * @autor 12S23045 Chintya Reginauli Rajagukguk
+ * @author 12S23023 Lenni Febriyani
+ * @author 12S23045 Chintya Reginauli Rajagukguk
  */
 
 public class Driver1 {
@@ -17,6 +18,18 @@ public class Driver1 {
     private static Map<String, Student> students = new HashMap<>();
     private static Map<String, Enrollment> enrollments = new HashMap<>();
 
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String input = scanner.nextLine();
+            if (input.equals("---")) {
+                break;
+            }
+            processInput(input);
+        }
+        scanner.close();
+        printData();
+    }
 
     private static void processInput(String input) {
         String[] parts = input.split("#");

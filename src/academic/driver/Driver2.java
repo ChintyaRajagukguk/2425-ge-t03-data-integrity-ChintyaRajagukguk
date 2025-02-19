@@ -1,78 +1,106 @@
 package academic.driver;
 
-import academic.model.*;
+import academic.model.Course;
+import academic.model.Student;
+import academic.model.Enrollment;
+
 import java.util.*;
 
-/**
- * @author 12S23023 Lenni Febriyani Hutape
- * @author 12S23045 Chintya Reginauli Rajagukguk
- */
-
 public class Driver2 {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        List<Course> courses = new ArrayList<>();
-        List<Student> students = new ArrayList<>();
-        List<Enrollment> enrollments = new ArrayList<>();
-        Set<String> errorSet = new HashSet<>();
-        List<String> errorList = new ArrayList<>();
-        
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            
-            if (line.equals("---")) break;
-            
-            String[] parts = line.split("#");
-            
-            try {
-                if (line.startsWith("course-add")) {
-                    courses.add(new Course(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
-                } else if (line.startsWith("student-add")) {
-                    students.add(new Student(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
-                } else if (line.startsWith("enrollment-add")) {
-                    boolean courseExists = courses.stream().anyMatch(c -> c.getCode().equals(parts[1]));
-                    boolean studentExists = students.stream().anyMatch(s -> s.getId().equals(parts[2]));
-                    
-                    if (!courseExists && errorSet.add("invalid course|" + parts[1])) {
-                        errorList.add("invalid course|" + parts[1]);
+    public static void main(String[] _args) {
+        Scanner sc = new Scanner(System.in);
+        LinkedHashSet<Course> courses = new LinkedHashSet<>();
+        LinkedHashSet<Student> students = new LinkedHashSet<>();
+        LinkedHashSet<Enrollment> enrollments = new LinkedHashSet<>();
+
+        Set<String> invalidStudents = new LinkedHashSet<>();
+        Set<String> invalidCourses = new LinkedHashSet<>();
+
+        List<String> inputs = new ArrayList<>();
+        while (true) {
+            String input = sc.nextLine();
+            if (input.equals("---")) break;
+            inputs.add(input);
+        }
+
+        for (String input : inputs) {
+            String[] data = input.split("#");
+
+            switch (data[0]) {
+                case "course-add":
+                    if (!isCourseExists(courses, data[1])) {
+                        courses.addFirst(new Course(data[1], data[2], Integer.parseInt(data[3]), data[4]));
                     }
-                    if (!studentExists && errorSet.add("invalid student|" + parts[2]) && !parts[2].equals("12S20000")) {
-                        errorList.add("invalid student|" + parts[2]);
+                    break;
+
+                case "student-add":
+                    if (!isStudentExists(students, data[1])) {
+                        students.add(new Student(data[1], data[2], Integer.parseInt(data[3]), data[4]));
                     }
-                    
-                    if (courseExists && studentExists) {
-                        enrollments.add(new Enrollment(parts[1], parts[2], parts[3], parts[4]));
+                    break;
+
+                case "enrollment-add":
+                    Course course = CourseById(courses, data[1]);
+                    Student student = StudentById(students, data[2]);
+
+                    if (course == null) {
+                        invalidCourses.add("invalid course|" + data[1]);
+                    } else if (student == null) {
+                        invalidStudents.add("invalid student|" + data[2]);
+                    } else if (!isEnrollmentExist(enrollments, data[1], data[2], data[3], data[4])) {
+                        enrollments.add(new Enrollment(data[1], data[2], data[3], data[4]));
                     }
-                }
-            } catch (Exception e) {
-                if (errorSet.add("Error: " + e.getMessage())) {
-                    errorList.add("Error: " + e.getMessage());
-                }
+                    break;
+
+                default:
+                    break;
             }
         }
 
-        // Cetak error dalam urutan yang benar
-        for (String error : errorList) {
+        for (String error : invalidStudents) {
+            System.out.println(error);
+        }
+        for (String error : invalidCourses) {
             System.out.println(error);
         }
 
-        // Urutkan courses terlebih dahulu
-        courses.sort(Comparator.comparing(Course::getCode));
-
-        // Urutkan students dalam urutan menurun berdasarkan ID
-        students.sort((s1, s2) -> s2.getId().compareTo(s1.getId())); // Decrement ID order
-
-        // Cetak courses, students, dan enrollments setelah error
         for (Course course : courses) {
             System.out.println(course);
         }
+
         for (Student student : students) {
             System.out.println(student);
         }
+
         for (Enrollment enrollment : enrollments) {
             System.out.println(enrollment);
         }
-        
-        scanner.close();
+
+        sc.close();
+    }
+
+    private static boolean isCourseExists(Set<Course> courses, String id) {
+        return courses.stream().anyMatch(c -> c.getId().equals(id));
+    }
+
+    private static boolean isStudentExists(Set<Student> students, String id) {
+        return students.stream().anyMatch(s -> s.getId().equals(id));
+    }
+
+    private static boolean isEnrollmentExist(Set<Enrollment> enrollments, String courseId, String studentId, String year, String semester) {
+        return enrollments.stream().anyMatch(e ->
+            e.getCourseCode().equals(courseId) &&
+            e.getStudentId().equals(studentId) &&
+            e.getYear().equals(year) &&
+            e.getSemester().equals(semester)
+        );
+    }
+
+    private static Course CourseById(Set<Course> courses, String id) {
+        return courses.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    private static Student StudentById(Set<Student> students, String id) {
+        return students.stream().filter(s -> s.getId().equals(id)).findFirst().orElse(null);
     }
 }

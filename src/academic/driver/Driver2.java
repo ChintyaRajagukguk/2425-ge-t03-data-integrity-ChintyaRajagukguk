@@ -1,79 +1,83 @@
 package academic.driver;
 
-import academic.model.*;
-import java.util.*;
-import java.util.Comparator;
-import java.util.Collections;
+import academic.model.Course;
+import academic.model.Student;
+import academic.model.Enrollment;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
 /**
- * @author 12S23023 Lenni Febriyani Hutape
+ * @author 12S23023 Lenni Febriyani
  * @author 12S23045 Chintya Reginauli Rajagukguk
  */
 
 public class Driver2 {
+    private static Map<String, Course> courses = new HashMap<>();
+    private static Map<String, Student> students = new HashMap<>();
+    private static Map<String, Enrollment> enrollments = new HashMap<>();
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        List<Course> courses = new ArrayList<>();
-        List<Student> students = new ArrayList<>();
-        List<Enrollment> enrollments = new ArrayList<>();
-        Set<String> errorSet = new HashSet<>();
-        List<String> errorList = new ArrayList<>();
-        
         while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            
-            if (line.equals("---")) break;
-            
-            String[] parts = line.split("#");
-            
-            try {
-                if (line.startsWith("course-add")) {
-                    courses.add(new Course(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
-                } else if (line.startsWith("student-add")) {
-                    students.add(new Student(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
-                } else if (line.startsWith("enrollment-add")) {
-                    boolean courseExists = courses.stream().anyMatch(c -> c.getCode().equals(parts[1]));
-                    boolean studentExists = students.stream().anyMatch(s -> s.getId().equals(parts[2]));
-                    
-                    if (!courseExists && errorSet.add("invalid course|" + parts[1])) {
-                        errorList.add("invalid course|" + parts[1]);
-                    }
-                    if (!studentExists && errorSet.add("invalid student|" + parts[2]) && !parts[2].equals("12S20000")) {
-                        errorList.add("invalid student|" + parts[2]);
-                    }
-                    
-                    if (courseExists && studentExists) {
-                        enrollments.add(new Enrollment(parts[1], parts[2], parts[3], parts[4]));
-                    }
-                }
-            } catch (Exception e) {
-                if (errorSet.add("Error: " + e.getMessage())) {
-                    errorList.add("Error: " + e.getMessage());
-                }
+            String input = scanner.nextLine();
+            if (input.equals("---")) {
+                break;
             }
+            processInput(input);
         }
-        Collections.sort(courses, Comparator.comparing(Course::getCode));
-        // Cetak error dalam urutan yang benar
-        for (String error : errorList) {
-            System.out.println(error);
-        }
-
-        // Urutkan courses terlebih dahulu
-        courses.sort(Comparator.comparing(Course::getCode));
-
-        // Urutkan students dalam urutan menurun berdasarkan ID
-        students.sort((s1, s2) -> s2.getId().compareTo(s1.getId())); // Decrement ID order
-
-        // Cetak courses, students, dan enrollments setelah error
-        for (Course course : courses) {
-            System.out.println(course);
-        }
-        for (Student student : students) {
-            System.out.println(student);
-        }
-        for (Enrollment enrollment : enrollments) {
-            System.out.println(enrollment);
-        }
-        
         scanner.close();
+        printData();
+    }
+
+    private static void processInput(String input) {
+        String[] parts = input.split("#");
+        switch (parts[0]) {
+            case "course-add":
+                addCourse(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4].charAt(0));
+                break;
+            case "student-add":
+                addStudent(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
+                break;
+            case "enrollment-add":
+                addEnrollment(parts[1], parts[2], parts[3], parts[4]);
+                break;
+        }
+    }
+
+    private static void addCourse(String code, String name, int credits, char grade) {
+        Course course = new Course(code, name, credits, grade);
+        courses.put(code, course);
+    }
+
+    private static void addStudent(String id, String name, int year, String major) {
+        Student student = new Student(id, name, year, major);
+        students.put(id, student);
+    }
+
+    private static void addEnrollment(String courseCode, String studentId, String academicYear, String semester) {
+        Course course = courses.get(courseCode);
+        Student student = students.get(studentId);
+        if (course == null) {
+            System.out.println("invalid course|" + courseCode);
+        } else if (student == null) {
+            System.out.println("invalid student|" + studentId);
+        } else {
+            Enrollment enrollment = new Enrollment(course, student, academicYear, semester);
+            enrollments.put(courseCode + "-" + studentId, enrollment);
+        }
+    }
+
+    private static void printData() {
+        for (Course course : courses.values()) {
+            System.out.println(course.getCode() + "|" + course.getName() + "|" + course.getCredits() + "|" + course.getGrade());
+        }
+        for (Student student : students.values()) {
+            System.out.println(student.getId() + "|" + student.getName() + "|" + student.getYear() + "|" + student.getMajor());
+        }
+        for (Enrollment enrollment : enrollments.values()) {
+            System.out.println(enrollment.getCourse().getCode() + "|" + enrollment.getStudent().getId() + "|" + enrollment.getAcademicYear() + "|" + enrollment.getSemester() + "|None");
+        }
     }
 }

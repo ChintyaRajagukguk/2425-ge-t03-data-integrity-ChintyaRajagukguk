@@ -1,39 +1,55 @@
 package academic.model;
 
+/**
+ * 
+ * @autor 12S23023 Lenni Febriyani
+ * @autor 12S23045 Chintya Reginauli Rajagukguk
+ */
+
 public class Course {
+    private String code;
+    private String name;
+    private int credits;
+    private char grade;
 
-    // class definition
-    private String id;
-    private String namaMK;
-    private int sks;
-    private String grade;
-
-    public Course(String id, String namaMK, int sks, String grade) {
-        this.id = id;
-        this.namaMK = namaMK;
-        this.sks = sks;
+    public Course(String code, String name, int credits, char grade) {
+        this.code = code;
+        this.name = name;
+        this.credits = credits;
         this.grade = grade;
     }
 
-    public String getId() {
-        return id;
+    // Getters
+    public String getCode() {
+        return code;
     }
 
-    public String getNamaMK() {
-        return namaMK;
+    public String getName() {
+        return name;
     }
 
-    public int getSks() {
-        return sks;
+    public int getCredits() {
+        return credits;
     }
 
-    public String getGrade() {
+    public char getGrade() {
         return grade;
     }
-    
-    @Override
-    public String toString(){
-        return id + "|" + namaMK + "|" + sks + "|" + grade;
+
+    // Setters (if needed)
+    public void setCode(String code) {
+        this.code = code;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
+    public void setGrade(char grade) {
+        this.grade = grade;
+    }
 }

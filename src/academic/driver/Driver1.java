@@ -6,10 +6,11 @@ import academic.model.Enrollment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
- * @autor 12S23023 Lenni Febriyani
- * @autor 12S23045 Chintya Reginauli Rajagukguk
+ * @author 12S23023 Lenni Febriyani
+ * @author 12S23045 Chintya Reginauli Rajagukguk
  */
 
 public class Driver1 {
@@ -17,12 +18,27 @@ public class Driver1 {
     private static Map<String, Student> students = new HashMap<>();
     private static Map<String, Enrollment> enrollments = new HashMap<>();
 
+    // ✅ Method main HARUS ADA supaya bisa dijalankan!
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.equals("---")) {
+                break;
+            }
+            processInput(line);
+        }
+        
+        printData();
+        scanner.close();
+    }
 
     private static void processInput(String input) {
         String[] parts = input.split("#");
         switch (parts[0]) {
             case "course-add":
-                addCourse(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4].charAt(0));
+                addCourse(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]); // Grade pakai String
                 break;
             case "student-add":
                 addStudent(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
@@ -33,7 +49,7 @@ public class Driver1 {
         }
     }
 
-    private static void addCourse(String code, String name, int credits, char grade) {
+    private static void addCourse(String code, String name, int credits, String grade) {
         Course course = new Course(code, name, credits, grade);
         courses.put(code, course);
     }
@@ -46,11 +62,14 @@ public class Driver1 {
     private static void addEnrollment(String courseCode, String studentId, String academicYear, String semester) {
         Course course = courses.get(courseCode);
         Student student = students.get(studentId);
+        
+        if (student == null) {
+            System.out.println("invalid student|" + studentId);
+        }
         if (course == null) {
             System.out.println("invalid course|" + courseCode);
-        } else if (student == null) {
-            System.out.println("invalid student|" + studentId);
-        } else {
+        }
+        if (course != null && student != null) {
             Enrollment enrollment = new Enrollment(course, student, academicYear, semester);
             enrollments.put(courseCode + "-" + studentId, enrollment);
         }

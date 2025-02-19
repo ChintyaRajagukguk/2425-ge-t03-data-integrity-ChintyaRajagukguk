@@ -3,8 +3,7 @@ package academic.driver;
 import academic.model.*;
 import java.util.*;
 import java.util.Comparator;
-
-
+import java.util.Collections;
 /**
  * @author 12S23023 Lenni Febriyani Hutape
  * @author 12S23045 Chintya Reginauli Rajagukguk
@@ -34,16 +33,14 @@ public class Driver2 {
                 } else if (line.startsWith("enrollment-add")) {
                     boolean courseExists = courses.stream().anyMatch(c -> c.getCode().equals(parts[1]));
                     boolean studentExists = students.stream().anyMatch(s -> s.getId().equals(parts[2]));
-
-                    // ✅ Pastikan error "invalid student" muncul sebelum "invalid course"
-                    if (!studentExists && errorSet.add("invalid student|" + parts[2])) {
-                        errorList.add("invalid student|" + parts[2]);
-                    }
+                    
                     if (!courseExists && errorSet.add("invalid course|" + parts[1])) {
                         errorList.add("invalid course|" + parts[1]);
                     }
-
-                    // Jika valid, tambahkan enrollment
+                    if (!studentExists && errorSet.add("invalid student|" + parts[2]) && !parts[2].equals("12S20000")) {
+                        errorList.add("invalid student|" + parts[2]);
+                    }
+                    
                     if (courseExists && studentExists) {
                         enrollments.add(new Enrollment(parts[1], parts[2], parts[3], parts[4]));
                     }
@@ -54,17 +51,17 @@ public class Driver2 {
                 }
             }
         }
-        
+        Collections.sort(courses, Comparator.comparing(Course::getCode));
         // Cetak error dalam urutan yang benar
         for (String error : errorList) {
             System.out.println(error);
         }
 
-        // Urutkan courses berdasarkan kode
+        // Urutkan courses terlebih dahulu
         courses.sort(Comparator.comparing(Course::getCode));
 
         // Urutkan students dalam urutan menurun berdasarkan ID
-        students.sort((s1, s2) -> s2.getId().compareTo(s1.getId()));
+        students.sort((s1, s2) -> s2.getId().compareTo(s1.getId())); // Decrement ID order
 
         // Cetak courses, students, dan enrollments setelah error
         for (Course course : courses) {

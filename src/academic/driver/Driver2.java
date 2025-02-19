@@ -51,7 +51,8 @@ public class Driver2 {
                 }
             }
         }
-Collections.sort(courses, Comparator.comparing(Course::getCode));
+        
+        Collections.sort(courses, Comparator.comparing(Course::getCode));
         // Cetak error dalam urutan yang benar
         for (String error : errorList) {
             System.out.println(error);

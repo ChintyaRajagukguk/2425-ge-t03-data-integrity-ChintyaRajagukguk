@@ -8,9 +8,10 @@ import java.util.*;
 public class Driver2 {
     public static void main(String[] _args) {
         Scanner sc = new Scanner(System.in);
-        LinkedHashSet<Course> courses = new LinkedHashSet<>(); 
-        LinkedHashSet<Student> students = new LinkedHashSet<>();
-        LinkedHashSet<Enrollment> enrollments = new LinkedHashSet<>();
+
+        Set<Course> courses = new TreeSet<>(Comparator.comparing(Course::getId));
+        Set<Student> students = new TreeSet<>(Comparator.comparing(Student::getId));
+        Set<Enrollment> enrollments = new LinkedHashSet<>(); // Enrollment tetap menggunakan LinkedHashSet
 
         Set<String> invalidStudents = new LinkedHashSet<>();
         Set<String> invalidCourses = new LinkedHashSet<>();
@@ -28,7 +29,7 @@ public class Driver2 {
             switch (data[0]) {
                 case "course-add":
                     if (!isCourseExists(courses, data[1])) {
-                        courses.add(new Course(data[1], data[2], Integer.parseInt(data[3]), data[4])); // FIXED: Menggunakan add() daripada addFirst()
+                        courses.add(new Course(data[1], data[2], Integer.parseInt(data[3]), data[4]));
                     }
                     break;
 

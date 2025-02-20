@@ -11,7 +11,7 @@ public class Driver2 {
 
         Set<Course> courses = new TreeSet<>(Comparator.comparing(Course::getId));
         Set<Student> students = new TreeSet<>(Comparator.comparing(Student::getId));
-        Set<Enrollment> enrollments = new LinkedHashSet<>(); // Enrollment tetap menggunakan LinkedHashSet
+        Set<Enrollment> enrollments = new LinkedHashSet<>();
 
         Set<String> invalidStudents = new LinkedHashSet<>();
         Set<String> invalidCourses = new LinkedHashSet<>();

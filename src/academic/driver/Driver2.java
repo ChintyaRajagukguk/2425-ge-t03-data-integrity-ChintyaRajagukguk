@@ -5,8 +5,8 @@ import academic.model.Enrollment;
 import java.util.*;
 
 /**
- * @author 12S23023 Lenni Febriyani Hutape
- * @author 12S23045 Chintya Reginauli Rajagukguk
+ * @author 12S23023 Lenni Febriyani
+ * @autor 12S23045 Chintya Reginauli Rajagukguk
  */
 
 public class Driver2 {
@@ -105,4 +105,3 @@ public class Driver2 {
          return students.stream().filter(s -> s.getId().equals(id)).findFirst().orElse(null);
      }
  }
- 

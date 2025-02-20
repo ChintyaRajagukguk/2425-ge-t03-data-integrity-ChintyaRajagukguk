@@ -2,7 +2,6 @@ package academic.model;
 
 public class Course {
 
-    // class definition
     private String id;
     private String namaMK;
     private int sks;

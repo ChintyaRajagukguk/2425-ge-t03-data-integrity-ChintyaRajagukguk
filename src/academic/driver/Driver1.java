@@ -28,7 +28,7 @@ public class Driver1 {
             switch (data[0]) {
                 case "course-add":
                     if (!isCourseExists(courses, data[1])) {
-                        courses.addFirst(new Course(data[1], data[2], Integer.parseInt(data[3]), data[4]));
+                        courses.addFirst(new Course(data[1], data[2], Integer.parseInt(data[3]), data[4])); // addFirst() bisa digunakan
                     }
                     break;
 

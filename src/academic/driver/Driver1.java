@@ -4,32 +4,20 @@ import academic.model.Course;
 import academic.model.Student;
 import academic.model.Enrollment;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
- * @author 12S23023 Lenni Febriyani
- * @author 12S23045 Chintya Reginauli Rajagukguk
+ * @autor 12S23023 Lenni Febriyani
+ * @autor 12S23045 Chintya Reginauli Rajagukguk
  */
 
+ 
 public class Driver1 {
-    private static Map<String, Course> courses = new LinkedHashMap<>();
-    private static Map<String, Student> students = new LinkedHashMap<>();
-    private static Map<String, Enrollment> enrollments = new LinkedHashMap<>();
+    private static Map<String, Course> courses = new HashMap<>();
+    private static Map<String, Student> students = new HashMap<>();
+    private static Map<String, Enrollment> enrollments = new HashMap<>();
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        
-        while (scanner.hasNextLine()) {
-            String input = scanner.nextLine().trim();
-            if (input.isEmpty()) break; // Jika input kosong, keluar dari loop
-            processInput(input);
-        }
-        
-        scanner.close();
-        printData(); // Cetak hasil akhir setelah semua input diproses
-    }
 
     private static void processInput(String input) {
         String[] parts = input.split("#");
@@ -70,15 +58,12 @@ public class Driver1 {
     }
 
     private static void printData() {
-        // Cetak Courses
         for (Course course : courses.values()) {
             System.out.println(course.getCode() + "|" + course.getName() + "|" + course.getCredits() + "|" + course.getGrade());
         }
-        // Cetak Students
         for (Student student : students.values()) {
             System.out.println(student.getId() + "|" + student.getName() + "|" + student.getYear() + "|" + student.getMajor());
         }
-        // Cetak Enrollments sesuai urutan input
         for (Enrollment enrollment : enrollments.values()) {
             System.out.println(enrollment.getCourse().getCode() + "|" + enrollment.getStudent().getId() + "|" + enrollment.getAcademicYear() + "|" + enrollment.getSemester() + "|None");
         }

@@ -1,5 +1,10 @@
 package academic.model;
 
+/**
+ * @author 12S23023 Lenni Febriyani Hutape
+ * @author 12S23045 Chintya Reginauli Rajagukguk
+ */
+
 public class Course {
 
     private String id;

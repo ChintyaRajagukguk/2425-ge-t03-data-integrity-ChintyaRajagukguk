@@ -4,68 +4,103 @@ import academic.model.Course;
 import academic.model.Student;
 import academic.model.Enrollment;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-/**
- * @autor 12S23023 Lenni Febriyani
- * @autor 12S23045 Chintya Reginauli Rajagukguk
- */
-
- 
 public class Driver1 {
-    private static Map<String, Course> courses = new HashMap<>();
-    private static Map<String, Student> students = new HashMap<>();
-    private static Map<String, Enrollment> enrollments = new HashMap<>();
+    public static void main(String[] _args) {
+        Scanner sc = new Scanner(System.in);
+        LinkedHashSet<Course> courses = new LinkedHashSet<>();
+        LinkedHashSet<Student> students = new LinkedHashSet<>();
+        LinkedHashSet<Enrollment> enrollments = new LinkedHashSet<>();
 
+        Set<String> invalidStudents = new LinkedHashSet<>();
+        Set<String> invalidCourses = new LinkedHashSet<>();
 
-    private static void processInput(String input) {
-        String[] parts = input.split("#");
-        switch (parts[0]) {
-            case "course-add":
-                addCourse(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4].charAt(0));
-                break;
-            case "student-add":
-                addStudent(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]);
-                break;
-            case "enrollment-add":
-                addEnrollment(parts[1], parts[2], parts[3], parts[4]);
-                break;
+        List<String> inputs = new ArrayList<>();
+        while (true) {
+            String input = sc.nextLine();
+            if (input.equals("---")) break;
+            inputs.add(input);
         }
+
+        for (String input : inputs) {
+            String[] data = input.split("#");
+
+            switch (data[0]) {
+                case "course-add":
+                    if (!isCourseExists(courses, data[1])) {
+                        courses.addFirst(new Course(data[1], data[2], Integer.parseInt(data[3]), data[4]));
+                    }
+                    break;
+
+                case "student-add":
+                    if (!isStudentExists(students, data[1])) {
+                        students.add(new Student(data[1], data[2], Integer.parseInt(data[3]), data[4]));
+                    }
+                    break;
+
+                case "enrollment-add":
+                    Course course = CourseById(courses, data[1]);
+                    Student student = StudentById(students, data[2]);
+
+                    if (course == null) {
+                        invalidCourses.add("invalid course|" + data[1]);
+                    } else if (student == null) {
+                        invalidStudents.add("invalid student|" + data[2]);
+                    } else if (!isEnrollmentExist(enrollments, data[1], data[2], data[3], data[4])) {
+                        enrollments.add(new Enrollment(data[1], data[2], data[3], data[4]));
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        for (String error : invalidStudents) {
+            System.out.println(error);
+        }
+        for (String error : invalidCourses) {
+            System.out.println(error);
+        }
+
+        for (Course course : courses) {
+            System.out.println(course);
+        }
+
+        for (Student student : students) {
+            System.out.println(student);
+        }
+
+        for (Enrollment enrollment : enrollments) {
+            System.out.println(enrollment);
+        }
+
+        sc.close();
     }
 
-    private static void addCourse(String code, String name, int credits, char grade) {
-        Course course = new Course(code, name, credits, grade);
-        courses.put(code, course);
+    private static boolean isCourseExists(Set<Course> courses, String id) {
+        return courses.stream().anyMatch(c -> c.getId().equals(id));
     }
 
-    private static void addStudent(String id, String name, int year, String major) {
-        Student student = new Student(id, name, year, major);
-        students.put(id, student);
+    private static boolean isStudentExists(Set<Student> students, String id) {
+        return students.stream().anyMatch(s -> s.getId().equals(id));
     }
 
-    private static void addEnrollment(String courseCode, String studentId, String academicYear, String semester) {
-        Course course = courses.get(courseCode);
-        Student student = students.get(studentId);
-        if (course == null) {
-            System.out.println("invalid course|" + courseCode);
-        } else if (student == null) {
-            System.out.println("invalid student|" + studentId);
-        } else {
-            Enrollment enrollment = new Enrollment(course, student, academicYear, semester);
-            enrollments.put(courseCode + "-" + studentId, enrollment);
-        }
+    private static boolean isEnrollmentExist(Set<Enrollment> enrollments, String courseId, String studentId, String year, String semester) {
+        return enrollments.stream().anyMatch(e ->
+            e.getCourseCode().equals(courseId) &&
+            e.getStudentId().equals(studentId) &&
+            e.getYear().equals(year) &&
+            e.getSemester().equals(semester)
+        );
     }
 
-    private static void printData() {
-        for (Course course : courses.values()) {
-            System.out.println(course.getCode() + "|" + course.getName() + "|" + course.getCredits() + "|" + course.getGrade());
-        }
-        for (Student student : students.values()) {
-            System.out.println(student.getId() + "|" + student.getName() + "|" + student.getYear() + "|" + student.getMajor());
-        }
-        for (Enrollment enrollment : enrollments.values()) {
-            System.out.println(enrollment.getCourse().getCode() + "|" + enrollment.getStudent().getId() + "|" + enrollment.getAcademicYear() + "|" + enrollment.getSemester() + "|None");
-        }
+    private static Course CourseById(Set<Course> courses, String id) {
+        return courses.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    private static Student StudentById(Set<Student> students, String id) {
+        return students.stream().filter(s -> s.getId().equals(id)).findFirst().orElse(null);
     }
 }

@@ -8,7 +8,7 @@ import java.util.*;
 public class Driver1 {
     public static void main(String[] _args) {
         Scanner sc = new Scanner(System.in);
-        LinkedList<Course> courses = new LinkedList<>(); // Menggunakan LinkedList agar addFirst() bisa dipakai
+        LinkedList<Course> courses = new LinkedList<>();
         LinkedHashSet<Student> students = new LinkedHashSet<>();
         LinkedHashSet<Enrollment> enrollments = new LinkedHashSet<>();
 

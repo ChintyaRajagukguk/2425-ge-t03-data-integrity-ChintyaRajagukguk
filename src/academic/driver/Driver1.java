@@ -8,7 +8,7 @@ import java.util.*;
 public class Driver1 {
     public static void main(String[] _args) {
         Scanner sc = new Scanner(System.in);
-        LinkedHashSet<Course> courses = new LinkedHashSet<>();
+        LinkedList<Course> courses = new LinkedList<>(); // Menggunakan LinkedList agar addFirst() bisa dipakai
         LinkedHashSet<Student> students = new LinkedHashSet<>();
         LinkedHashSet<Enrollment> enrollments = new LinkedHashSet<>();
 
@@ -39,8 +39,8 @@ public class Driver1 {
                     break;
 
                 case "enrollment-add":
-                    Course course = CourseById(courses, data[1]);
-                    Student student = StudentById(students, data[2]);
+                    Course course = getCourseById(courses, data[1]);
+                    Student student = getStudentById(students, data[2]);
 
                     if (course == null) {
                         invalidCourses.add("invalid course|" + data[1]);
@@ -78,7 +78,7 @@ public class Driver1 {
         sc.close();
     }
 
-    private static boolean isCourseExists(Set<Course> courses, String id) {
+    private static boolean isCourseExists(List<Course> courses, String id) {
         return courses.stream().anyMatch(c -> c.getId().equals(id));
     }
 
@@ -95,11 +95,11 @@ public class Driver1 {
         );
     }
 
-    private static Course CourseById(Set<Course> courses, String id) {
+    private static Course getCourseById(List<Course> courses, String id) {
         return courses.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
     }
 
-    private static Student StudentById(Set<Student> students, String id) {
+    private static Student getStudentById(Set<Student> students, String id) {
         return students.stream().filter(s -> s.getId().equals(id)).findFirst().orElse(null);
     }
 }

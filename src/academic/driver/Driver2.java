@@ -3,13 +3,12 @@ package academic.driver;
 import academic.model.Course;
 import academic.model.Student;
 import academic.model.Enrollment;
-
 import java.util.*;
 
 public class Driver2 {
     public static void main(String[] _args) {
         Scanner sc = new Scanner(System.in);
-        LinkedHashSet<Course> courses = new LinkedHashSet<>();
+        LinkedHashSet<Course> courses = new LinkedHashSet<>(); 
         LinkedHashSet<Student> students = new LinkedHashSet<>();
         LinkedHashSet<Enrollment> enrollments = new LinkedHashSet<>();
 
@@ -29,7 +28,7 @@ public class Driver2 {
             switch (data[0]) {
                 case "course-add":
                     if (!isCourseExists(courses, data[1])) {
-                        courses.addFirst(new Course(data[1], data[2], Integer.parseInt(data[3]), data[4]));
+                        courses.add(new Course(data[1], data[2], Integer.parseInt(data[3]), data[4])); // FIXED: Menggunakan add() daripada addFirst()
                     }
                     break;
 
@@ -40,8 +39,8 @@ public class Driver2 {
                     break;
 
                 case "enrollment-add":
-                    Course course = CourseById(courses, data[1]);
-                    Student student = StudentById(students, data[2]);
+                    Course course = getCourseById(courses, data[1]);
+                    Student student = getStudentById(students, data[2]);
 
                     if (course == null) {
                         invalidCourses.add("invalid course|" + data[1]);
@@ -96,11 +95,11 @@ public class Driver2 {
         );
     }
 
-    private static Course CourseById(Set<Course> courses, String id) {
+    private static Course getCourseById(Set<Course> courses, String id) {
         return courses.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
     }
 
-    private static Student StudentById(Set<Student> students, String id) {
+    private static Student getStudentById(Set<Student> students, String id) {
         return students.stream().filter(s -> s.getId().equals(id)).findFirst().orElse(null);
     }
 }
